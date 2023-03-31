@@ -4,14 +4,17 @@ import DatePicker from "@/components/Inputs/DatePicker";
 import useApiRequest from "@/hooks/useApiRequest";
 import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
+import _isEmpty from "lodash.isempty";
 import { Gateway, Project, Report } from "./types";
 
 const Toolbar = ({
 	onReport,
 	onParams,
+	onBreadcrumb,
 }: {
 	onReport: (reports: Report[]) => void;
 	onParams: (params: Record<string, string>) => void;
+	onBreadcrumb: (breadcrumb: string) => void;
 }) => {
 	const makeRequest = useApiRequest();
 	const [projects, setProjects] = useState<Project[]>([]);
@@ -22,18 +25,49 @@ const Toolbar = ({
 	const [hasError, setError] = useState<unknown>(null);
 	const [isLoading, setLoading] = useState(false);
 
+	// Generate the Gateway list
+	const GATEWAY_LIST = useMemo(() => {
+		const list = gateways.map(({ gatewayId = "", name = "" }) => ({
+			value: gatewayId,
+			label: name,
+		}));
+
+		return [{ value: "ALL", label: "All gateways" }, ...list];
+	}, [gateways]);
+
+	// Generate the project list
+	const PROJECT_LIST = useMemo(() => {
+		const list = projects.map(({ projectId = "", name = "" }) => ({
+			value: projectId,
+			label: name,
+		}));
+
+		return [{ value: "ALL", label: "All projects" }, ...list];
+	}, [projects]);
+
 	// Fetch projects and gateways
 	const handleFetch = async () => {
 		setError(null);
 		setLoading(true);
 		try {
-			const [projectsResponse, gatewaysResponse] = await Promise.all([
+			const [
+				{
+					data: { data: projectsResponse },
+				},
+				{
+					data: { data: gatewaysResponse },
+				},
+			] = await Promise.all([
 				makeRequest.get("/projects"),
 				makeRequest.get("/gateways"),
 			]);
 
-			setProjects(projectsResponse?.data?.data as Project[]);
-			setGateways(gatewaysResponse?.data?.data as Gateway[]);
+			setProjects(projectsResponse as Project[]);
+			setGateways(gatewaysResponse as Gateway[]);
+
+			// Set locally
+			localStorage.setItem("projects", JSON.stringify(projectsResponse));
+			localStorage.setItem("gateways", JSON.stringify(gatewaysResponse));
 		} catch (error) {
 			setError(error);
 		}
@@ -45,18 +79,39 @@ const Toolbar = ({
 		setError(null);
 		setLoading(true);
 		try {
-			const {
-				data: { data: reports },
-			} = await makeRequest.post(`/report`, toolbarArguments);
+			if (!_isEmpty(toolbarArguments)) {
+				const payload: Record<string, string> = {};
 
-			// Send report parameters
-			if (onParams) {
+				// Want to strip out instances of 'ALL' value
+				Object.entries(toolbarArguments).forEach(([key, value]) => {
+					if (value !== "ALL") {
+						payload[key] = value;
+					}
+				});
+
+				const {
+					data: { data: reports },
+				} = await makeRequest.post(`/report`, payload);
+
+				const projectName = PROJECT_LIST?.find(
+					({ value }) => value === toolbarArguments?.projectId
+				)?.label;
+				const gatewayName = GATEWAY_LIST?.find(
+					({ value }) => value === toolbarArguments?.gatewayId
+				)?.label;
+
+				const breadcrumb = `${projectName || "All projects"} | ${
+					gatewayName || "All gateways"
+				}`;
+
+				// Send report parameters
 				onParams(toolbarArguments);
-			}
 
-			// Send report result
-			if (onReport) {
+				// Send report result
 				onReport(reports);
+
+				// set breadcrumb
+				onBreadcrumb(breadcrumb);
 			}
 		} catch (error) {
 			setError(error);
@@ -76,26 +131,6 @@ const Toolbar = ({
 			[name]: value,
 		}));
 	};
-
-	// Generate the Gateway list
-	const GATEWAY_LIST = useMemo(() => {
-		const list = gateways.map(({ gatewayId = "", name = "" }) => ({
-			value: gatewayId,
-			label: name,
-		}));
-
-		return [{ value: "", label: "All gateways" }, ...list];
-	}, [gateways]);
-
-	// Generate the project list
-	const PROJECT_LIST = useMemo(() => {
-		const list = projects.map(({ projectId = "", name = "" }) => ({
-			value: projectId,
-			label: name,
-		}));
-
-		return [{ value: "", label: "All projects" }, ...list];
-	}, [projects]);
 
 	return (
 		<div className="toolbar">

@@ -36,4 +36,6 @@ export type Report = {
 	userIds?: string[];
 	modified?: string;
 	created?: string;
+	projectName?: string;
+	gatewayName?: string;
 };
