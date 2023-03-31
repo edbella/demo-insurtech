@@ -56,7 +56,7 @@ const ResultsSheet = ({
 
 	return (
 		<>
-			<div className="bg-brand-light-blue p-4 rounded-lg">
+			<div className="bg-brand-light-blue p-6 rounded-lg">
 				<p className="font-bold mb-10">{breadcrumb}</p>
 
 				<div className="flex flex-col gap-4">
