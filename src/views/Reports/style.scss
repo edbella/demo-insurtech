@@ -1,0 +1,17 @@
+.reports-view {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base-spacing) * 3);
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--base-spacing) * 2);
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--base-spacing) * 3);
+    }
+  }
+}

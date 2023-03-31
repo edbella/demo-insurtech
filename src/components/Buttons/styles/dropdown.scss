@@ -1,0 +1,45 @@
+.dropdown-button {
+	.control {
+		padding: calc(var(--base-spacing) * 0.75) calc(var(--base-spacing) * 2);
+		background-color: var(--base-color-green);
+		font-size: calc(var(--base-font-size) - 2px);
+		border-radius: calc(var(--base-spacing) - 3px);
+		color: #fff;
+		transition: background-color 0.3s ease-in-out;
+		border: none;
+		display: flex;
+		align-items: center;
+		min-width: 120px;
+		gap: calc(var(--base-spacing) * 1);
+
+		.input {
+			flex-grow: 1;
+		}
+	}
+
+	.menu-list {
+		background-color: var(--base-color-green);
+		border-radius: calc(var(--base-spacing) - 3px);
+		border: none;
+		margin-top: calc(var(--base-spacing) - 4px);
+
+		> div {
+			color: #fff;
+			padding: calc(var(--base-spacing) * 0.5) calc(var(--base-spacing) * 1.75);
+			font-size: calc(var(--base-font-size) - 2px);
+			font-weight: 400;
+
+			&:hover {
+				background-color: #14a19a;
+			}
+		}
+
+		.is-selected {
+			background-color: #14a19a;
+			color: #fff;
+			padding: calc(var(--base-spacing) * 0.5) calc(var(--base-spacing) * 1.75);
+			font-size: calc(var(--base-font-size) - 2px);
+			font-weight: 400;
+		}
+	}
+}

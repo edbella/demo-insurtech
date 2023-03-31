@@ -1,0 +1,19 @@
+.brand-button {
+	padding: calc(var(--base-spacing) * 0.75) calc(var(--base-spacing) * 2);
+  font-size: calc(var(--base-font-size) - 2px);
+	border-radius: calc(var(--base-spacing) - 3px);
+	color: #fff;
+	background-color: var(--base-color-mid-blue);
+	transition: background-color 0.3s ease-in-out;
+
+	&:hover {
+		background-color: #00406a;
+	}
+
+  &.date-picker{ 
+    background-color: var(--base-color-green);
+    display: flex;
+    gap: var(--base-spacing);
+    align-items: center;
+  }
+}

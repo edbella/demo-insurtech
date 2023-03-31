@@ -1,0 +1,49 @@
+.app-layout {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+
+	.body {
+    flex-grow: 1;
+		display: flex;
+		flex-direction: row;
+		gap: var(--base-spacing);
+		height: 100%;
+
+		.side-nav {
+      min-height: 100%;
+			max-height: 100%;
+      overflow-y: scroll;
+			min-width: 80px;
+			padding: calc(var(--base-spacing) * 4) calc(var(--base-spacing) * 2);
+			background-color: #fff;
+			display: flex;
+			flex-direction: column;
+			gap: calc(var(--base-spacing) * 3.5);
+			align-items: center;
+
+      &.closed {
+        min-width: 0;
+        width: 0;
+        transition: all 0.2s ease-in-out;
+      }
+
+			.nav-button {
+				font-size: calc(var(--base-font-size) * 1.6);
+
+				svg {
+					font-size: inherit;
+				}
+			}
+		}
+
+    main {
+      padding: calc(var(--base-spacing) * 3.5) calc(var(--base-spacing) * 2);
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+			min-height: 100%;
+			padding-right: 30px;
+    }
+	}
+}
