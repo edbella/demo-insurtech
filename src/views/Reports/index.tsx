@@ -7,14 +7,10 @@ import { Report } from "./components/types";
 import "./style.scss";
 
 const Reports = () => {
-	const makeRequest = useApiRequest();
 	const [reports, setReports] = useState<Report[]>([]);
 	const [reportParams, setReportParams] = useState<Record<string, string>>({});
 	const [breadcrumb, setBreadcrumb] = useState("");
-
-	useEffect(() => {
-		makeRequest.get("/gateways");
-	}, []);
+	const [isLoading, setLoading] = useState(false);
 
 	return (
 		<div className="reports-view">
@@ -29,17 +25,26 @@ const Reports = () => {
 					onReport={setReports}
 					onParams={setReportParams}
 					onBreadcrumb={setBreadcrumb}
+					onLoading={setLoading}
 				/>
 			</article>
 
-			{!reports?.length ? (
-				<EmptyReports />
+			{isLoading ? (
+				<div className="min-h-[450px] text-center max-w-[470px] mx-auto h-full flex flex-col justify-center items-center">
+					<p>Fetching reports...</p>
+				</div>
 			) : (
-				<ResultsSheet
-					reports={reports}
-					params={reportParams}
-					breadcrumb={breadcrumb}
-				/>
+				<>
+					{!reports?.length ? (
+						<EmptyReports />
+					) : (
+						<ResultsSheet
+							reports={reports}
+							params={reportParams}
+							breadcrumb={breadcrumb}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	);

@@ -11,10 +11,12 @@ const Toolbar = ({
 	onReport,
 	onParams,
 	onBreadcrumb,
+	onLoading,
 }: {
 	onReport: (reports: Report[]) => void;
 	onParams: (params: Record<string, string>) => void;
 	onBreadcrumb: (breadcrumb: string) => void;
+	onLoading: (loading: boolean) => void;
 }) => {
 	const makeRequest = useApiRequest();
 	const [projects, setProjects] = useState<Project[]>([]);
@@ -49,6 +51,7 @@ const Toolbar = ({
 	const handleFetch = async () => {
 		setError(null);
 		setLoading(true);
+
 		try {
 			const [
 				{
@@ -78,8 +81,13 @@ const Toolbar = ({
 	const getReports = async () => {
 		setError(null);
 		setLoading(true);
+		onLoading(true);
 		try {
-			if (!_isEmpty(toolbarArguments)) {
+			console.log(Object.keys(toolbarArguments));
+			if (
+				!_isEmpty(toolbarArguments) &&
+				Object.keys(toolbarArguments).length === 4
+			) {
 				const payload: Record<string, string> = {};
 
 				// Want to strip out instances of 'ALL' value
@@ -108,7 +116,9 @@ const Toolbar = ({
 				onParams(toolbarArguments);
 
 				// Send report result
-				onReport(reports);
+				onReport(
+					reports.map((report: Report) => ({ ...report, id: report?.paymentId }))
+				);
 
 				// set breadcrumb
 				onBreadcrumb(breadcrumb);
@@ -117,6 +127,7 @@ const Toolbar = ({
 			setError(error);
 		}
 		setLoading(false);
+		onLoading(false);
 	};
 
 	// Fetch on mount

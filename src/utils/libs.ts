@@ -19,5 +19,8 @@ export const formatNumberToCurrency = ({
 		value = 0;
 	}
 
-	return formatter.format(value);
+	const formattedValue = formatter.format(value);
+	const outputValue = `${formattedValue.slice(1)} ${currencyCode}`;
+
+	return outputValue;
 };

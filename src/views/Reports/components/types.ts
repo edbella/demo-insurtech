@@ -29,6 +29,7 @@ export type Gateway = {
 };
 
 export type Report = {
+	id: string;
 	paymentId?: string;
 	amount?: number;
 	projectId?: string;
@@ -38,4 +39,5 @@ export type Report = {
 	created?: string;
 	projectName?: string;
 	gatewayName?: string;
+	type?: string;
 };
