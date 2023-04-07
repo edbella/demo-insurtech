@@ -7,7 +7,7 @@ import { Report } from "./types";
 const colorScheme = ["#A259FF", "#F24E1E", "#FFC107", "#6497B1"];
 const options = {
 	colors: colorScheme,
-	pieHole: 0.4,
+	pieHole: 0.5,
 	is3D: false,
 	legend: "none",
 	chartArea: {
