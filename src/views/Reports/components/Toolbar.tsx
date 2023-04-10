@@ -23,8 +23,13 @@ const Toolbar = ({
 	const [gateways, setGateways] = useState<Gateway[]>([]);
 	const [toolbarArguments, setToolbarArguments] = useState<
 		Record<string, string>
-	>({});
-	const [hasError, setError] = useState<unknown>(null);
+	>({
+		from: "",
+		to: "",
+		gatewayId: "ALL",
+		projectId: "ALL",
+	});
+	const [_, setError] = useState<unknown>(null);
 	const [isLoading, setLoading] = useState(false);
 
 	// Generate the Gateway list
@@ -83,11 +88,7 @@ const Toolbar = ({
 		setLoading(true);
 		onLoading(true);
 		try {
-			console.log(Object.keys(toolbarArguments));
-			if (
-				!_isEmpty(toolbarArguments) &&
-				Object.keys(toolbarArguments).length === 4
-			) {
+			if (!_isEmpty(toolbarArguments)) {
 				const payload: Record<string, string> = {};
 
 				// Want to strip out instances of 'ALL' value
@@ -143,6 +144,10 @@ const Toolbar = ({
 		}));
 	};
 
+	// Date limits
+	const toDateLimit = toolbarArguments["from"];
+	const fromDateLimit = toolbarArguments["to"];
+
 	return (
 		<div className="toolbar">
 			<DropdownButton
@@ -165,7 +170,7 @@ const Toolbar = ({
 				placeholder="From Date"
 				options={{
 					minDate: `2021-01-01`,
-					maxDate: `2021-12-31`,
+					maxDate: fromDateLimit ?? `2021-12-31`,
 				}}
 				onChange={([date]) => {
 					handleChange("from", format(date, "yyyy-MM-dd"));
@@ -175,7 +180,7 @@ const Toolbar = ({
 			<DatePicker
 				placeholder="To Date"
 				options={{
-					minDate: `2021-01-01`,
+					minDate: toDateLimit ?? `2021-01-01`,
 					maxDate: `2021-12-31`,
 				}}
 				onChange={([date]) => {
